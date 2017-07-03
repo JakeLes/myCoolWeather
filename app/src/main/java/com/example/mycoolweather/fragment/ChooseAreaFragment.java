@@ -1,6 +1,7 @@
 package com.example.mycoolweather.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mycoolweather.R;
+import com.example.mycoolweather.activity.WeatherActivity;
 import com.example.mycoolweather.db.City;
 import com.example.mycoolweather.db.County;
 import com.example.mycoolweather.db.Province;
@@ -105,6 +107,12 @@ public class ChooseAreaFragment extends Fragment {
                    }  else if(currentLevel == LEVEL_CITY){
                        selectedCity =cityList.get(position);
                        queryCounties();
+                   }else if (currentLevel == LEVEL_COUNTY){
+                       String weatherId = countyList.get(position).getWeatherId();
+                       Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                       intent.putExtra("weather_id",weatherId);
+                       startActivity(intent);
+                       getActivity().finish();
                    }
             }
         });
@@ -213,9 +221,9 @@ public class ChooseAreaFragment extends Fragment {
     }
 
     /**
-     * 查询选中省内所有的市
+     * 查询选中省内所有市
      */
-    private void queryCounties() {
+    private void queryCities() {
         titleText.setText(selectedProvince.getProvinceName());
         backButton.setVisibility(View.VISIBLE);
         cityList =DataSupport.where("provinceid =?",String.valueOf(selectedProvince.getId())) .find(City.class);
@@ -235,7 +243,7 @@ public class ChooseAreaFragment extends Fragment {
 
     }
 
-    private void queryCities() {
+    private void queryCounties() {
         titleText.setText(selectedCity.getCityName());
         backButton.setVisibility(View.VISIBLE);
 
